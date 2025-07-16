@@ -1,10 +1,11 @@
 import { fal } from "@fal-ai/client"
+import { FAL_AI_PROMPT } from "../prompts";
 
 fal.config({
     credentials: process.env.FAL_API_KEY,
 })
 
-export async function generateVideoFromImage(imageUrl: string, prompt: string) {
+export async function generateVideoFromImage(imageUrl: string) {
     try {
         const model = process.env.FAL_VIDEO_GENERATION_MODEL || '';
         if (model === "") {
@@ -12,7 +13,7 @@ export async function generateVideoFromImage(imageUrl: string, prompt: string) {
         }
         const result = await fal.subscribe(model, {
             input: {
-                prompt,
+                prompt: FAL_AI_PROMPT,
                 image_url: imageUrl,
             },
             logs: true,
@@ -22,7 +23,7 @@ export async function generateVideoFromImage(imageUrl: string, prompt: string) {
         return result;
     } catch (err) {
         console.error(err);
-        throw err;  
+        throw err;
     }
 
 }
