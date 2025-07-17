@@ -100,11 +100,3 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Frontend** is fully decoupled and only communicates with backend via fetch.
 
 ---
-
-## License
-
-MIT
-
----
-
-**Made with ❤️ using Next.js, fal.ai, and ffmpeg**

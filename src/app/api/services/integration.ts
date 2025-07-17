@@ -5,6 +5,7 @@ fal.config({
     credentials: process.env.FAL_API_KEY,
 })
 
+// generate 5 seconds video from image
 export async function generateVideoFromImage(imageUrl: string) {
     try {
         const model = process.env.FAL_VIDEO_GENERATION_MODEL || '';
