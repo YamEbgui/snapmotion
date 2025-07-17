@@ -1,9 +1,10 @@
 import { spawn } from 'child_process'
 import { randomUUID } from "crypto";
+import { tmpdir } from 'os';
 
+const tmpDir = tmpdir();
 const TAKE_AT_SECONDS = '4'
 const FILE_EXTENSION = '.png'
-
 
 export async function extractFrame(videoUrl: string): Promise<string> {
     try {
@@ -11,10 +12,10 @@ export async function extractFrame(videoUrl: string): Promise<string> {
         const fileName = frameId + FILE_EXTENSION;
 
         const ffmpeg = spawn('ffmpeg', [
-            '-i', videoUrl,
+            '-i', tmpDir + '/' + videoUrl,
             '-ss', TAKE_AT_SECONDS,
             '-vframes', '1',
-            fileName
+            tmpDir + '/' + fileName
         ])
 
         ffmpeg.stderr.on('data', (data) => {
@@ -25,7 +26,7 @@ export async function extractFrame(videoUrl: string): Promise<string> {
             console.log(`Image generated successfully`);
         });
 
-        return fileName;
+        return tmpDir + '/' + fileName;
     } catch (err) {
         console.error(err);
         throw err;

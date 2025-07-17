@@ -1,7 +1,7 @@
+import { NextRequest, NextResponse } from "next/server";
 import { generateVideoFromImage } from "@/app/api/services/integration";
 import { downloadVideo } from "@/app/api/services/downloadVideo";
 import { extractFrame } from "@/app/api/services/framesExtraction";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     try {
@@ -23,9 +23,10 @@ export async function POST(request: NextRequest) {
 
         // Call your function (adjust arguments as needed)
         const result = await generateVideoFromImage(bufferUri);
-        const reqId = result.data.id;
+        const reqId = result.requestId;
 
 
+        // Ensure Url for video exist 
         if (result.data.video.url !== null) {
             await downloadVideo(result.data.video.url, reqId + ".mp4");
         } else {
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
         // Get Frame from video
         const frame = await extractFrame(reqId + ".mp4");
 
-        return NextResponse.json({ result, frame });
+        return NextResponse.json({ frames: [frame] });
     } catch (error) {
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
