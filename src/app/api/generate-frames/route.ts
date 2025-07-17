@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateVideoFromImage } from "@/app/api/services/integration";
 import { downloadVideo } from "@/app/api/services/downloadVideo";
 import { extractFrame } from "@/app/api/services/framesExtraction";
+import { readFileSync } from "fs";
+import { uploadImageAndReturnPresignedUrl } from "../services/uploadImage";
+import { readFile } from 'fs/promises'
+import { join as pathJoin } from 'path';
+import { tmpdir } from "os";
+
+const tmpDir = tmpdir();
 
 export async function POST(request: NextRequest) {
     try {
@@ -34,10 +41,19 @@ export async function POST(request: NextRequest) {
         }
 
         // Get Frame from video
-        const frame = await extractFrame(reqId + ".mp4");
+        const videoPath = reqId + ".mp4";
+        const frame = await extractFrame(videoPath);
 
-        return NextResponse.json({ frames: [frame] });
+        console.log("Frame: " + frame);
+
+        // Upload frame to S3
+        const framePath = pathJoin(tmpDir, frame);
+        const frameBuffer = await readFileSync(framePath);
+        const presignedUrl = await uploadImageAndReturnPresignedUrl(frameBuffer, frame);
+
+        return NextResponse.json({ frames: [{ url: presignedUrl }] });
     } catch (error) {
+        console.error("Error while generating frames:", error);
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     }
 }

@@ -1,6 +1,8 @@
 import { spawn } from 'child_process'
 import { randomUUID } from "crypto";
+import { execa } from 'execa';
 import { tmpdir } from 'os';
+import { join as pathJoin } from 'path';
 
 const tmpDir = tmpdir();
 const TAKE_AT_SECONDS = '4'
@@ -10,23 +12,17 @@ export async function extractFrame(videoUrl: string): Promise<string> {
     try {
         const frameId = randomUUID();
         const fileName = frameId + FILE_EXTENSION;
+        const videoPath = pathJoin(tmpDir, videoUrl);
+        const outputPath = pathJoin(tmpDir, fileName);
 
-        const ffmpeg = spawn('ffmpeg', [
-            '-i', tmpDir + '/' + videoUrl,
+        await execa('ffmpeg', [
+            '-i', videoPath,
             '-ss', TAKE_AT_SECONDS,
             '-vframes', '1',
-            tmpDir + '/' + fileName
-        ])
+            outputPath
+        ]);
 
-        ffmpeg.stderr.on('data', (data) => {
-            console.log(data.toString());
-        });
-
-        ffmpeg.on('exit', () => {
-            console.log(`Image generated successfully`);
-        });
-
-        return tmpDir + '/' + fileName;
+        return fileName;
     } catch (err) {
         console.error(err);
         throw err;
