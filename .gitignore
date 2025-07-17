@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# terraform
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfvars
+terraform.tfvars.backup
+terraform.tfvars.backup.backup
