@@ -9,15 +9,18 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files and install dependencies (including devDependencies for build)
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 
 # Copy the rest of your app's source code
 COPY . .
 
-# Build TypeScript (if you use it)
+# Build the application
 RUN npm run build
+
+# Remove devDependencies to reduce image size
+RUN npm prune --production
 
 # Expose the port your app runs on
 EXPOSE 3000
