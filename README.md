@@ -4,50 +4,64 @@
 
 # SnapMotion
 
-SnapMotion is a modern Next.js + TypeScript web application that lets users upload an image, generate a video using [fal.ai](https://fal.ai/) generative AI, and view extracted frames from the generated video.
+SnapMotion is a modern Next.js + TypeScript web application that transforms static images into dynamic video frames using AI. Users can upload an image and watch as our AI creates multiple frames showing different poses and perspectives of their subject.
 
 ---
 
-## Features
+## ✨ Features
 
-- 🚀 Next.js 15 with App Router
-- ⚡ TypeScript & React 19
-- 🎨 Tailwind CSS styling & modern UI
-- 🖼️ Image upload with preview and validation (PNG, JPEG, WEBP)
-- 🤖 Video generation via fal.ai API (secure API key usage)
-- 🖥️ Frame extraction from generated video using ffmpeg
-- 🔒 Secure backend logic (API keys never exposed to client)
-- 🗂️ Clean code structure with reusable components and services
-
----
-
-## How It Works
-
-1. **User uploads an image** (PNG, JPEG, or WEBP) via a modern, validated form.
-2. **Backend API** receives the image, sends it to fal.ai for video generation using a custom prompt.
-3. **Video is downloaded** to a temporary directory on the server.
-4. **ffmpeg extracts a frame** from the video.
-5. **Frontend displays the extracted frame(s)** to the user.
+- 🚀 **Next.js 15** with App Router & React 19
+- ⚡ **Modern UI/UX** with Tailwind CSS v4 and enhanced animations
+- 🖼️ **Advanced Image Upload** with drag & drop, preview, and validation (PNG, JPEG, WEBP)
+- 🤖 **AI Video Generation** via fal.ai API with secure backend processing
+- 🎬 **Frame Extraction** from generated videos using ffmpeg
+- 🔒 **Secure Architecture** - API keys never exposed to client
+- 🎯 **Enhanced User Experience** with loading states, animations, and intuitive workflow
+- 💾 **Download Functionality** - Individual frame downloads and bulk download options 
 
 ---
 
-## Usage Flow
+## 🎯 How It Works
 
-- **Upload an image** of a person, animal, toy, or digital character.
-- **For best results:**
-  - The subject should be clearly visible (not blurry)
-  - Only one main object should be in focus
-  - The background should not be too cluttered
-- **Click "Generate New Frames"** and wait for the AI to process.
-- **View the generated frame(s)** below the form.
+1. **Upload Your Image** 📤
+   - Drag & drop or click to select an image
+   - Real-time preview with validation
+   - Supports PNG, JPEG, and WEBP formats
+
+2. **AI Processing** 🤖
+   - Image sent securely to fal.ai for video generation
+   - Custom AI prompt optimizes pose transformation
+   - Beautiful loading animations show progress
+
+3. **Frame Generation** 🎬
+   - Video downloaded to secure temporary directory
+   - ffmpeg extracts multiple high-quality frames
+   - Frames uploaded to S3 with presigned URLs
+
+4. **View & Download** 📱
+   - Individual frame downloads with loading states
+   - Bulk download option for all frames
+   - Smooth animations and transitions
+
 
 ---
 
----
+## 📋 Usage Guidelines
 
-## Getting Started
+### **Perfect Subjects for Transformation:**
+- 👤 **People** - Standing, sitting, dancing, or any human pose
+- 🐾 **Animals** - Pets, wildlife, or any living creature  
+- 🎭 **Characters** - Toys, statues, or digital characters
 
-### 1. Install dependencies
+### **For Best Results:**
+- ✅ Ensure the subject is clearly visible and not blurry
+- ✅ Focus on one main object or figure
+- ✅ Avoid cluttered or busy backgrounds
+- ✅ Use good lighting and contrast
+
+## 🚀 Getting Started
+
+### 1. Install Dependencies
 
 ```bash
 npm install
@@ -55,48 +69,115 @@ npm install
 yarn install
 ```
 
-### 2. Set up environment variables
+### 2. AWS Configuration
 
-Create a `.env.local` file in the root directory and add your fal.ai API key and model:
+Ensure your AWS credentials are configured for S3 access:
+- S3 bucket for frame storage
+- Proper IAM permissions for upload/download
 
-FAL_API_KEY=your_fal_ai_api_key
-FAL_VIDEO_GENERATION_MODEL=your_fal_ai_model_id
 
-### 3. Run the development server
+### 3. System Requirements
+
+Install ffmpeg on your server:
+```bash
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt-get install ffmpeg
+
+# Windows
+# Download from https://ffmpeg.org/download.html
+```
+
+### 4. Run Development Server
+
 ```bash
 npm run dev
 # or
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ---
 
-## Backend Details
+## 🏗️ Tech Stack
 
-- **API Route:** `/api/generate-frames` handles image upload, video generation, download, and frame extraction.
-- **fal.ai Integration:** Uses secure API key from environment variables.
-- **Video Download:** Video is saved to a temp directory using Node.js streams.
-- **Frame Extraction:** Uses ffmpeg (must be installed on your server) to extract frames.
+### **Frontend**
+- [Next.js 15](https://nextjs.org/) - React framework with App Router
+- [React 19](https://react.dev/) - Latest React with concurrent features
+- [TypeScript](https://www.typescriptlang.org/) - Type safety and developer experience
+- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
+
+### **Backend & AI**
+- [fal.ai](https://fal.ai/) - Generative AI API for video creation
+- [ffmpeg](https://ffmpeg.org/) - Video processing and frame extraction
+- [AWS S3](https://aws.amazon.com/s3/) - Cloud storage for generated frames
+
+### **Infrastructure**
+- AWS App Runner - Serverless deployment
+- AWS ECR - Container registry for Docker images
+- Terraform - Infrastructure as Code
+- GitHub Actions - CI/CD automation
+
+---
+
+## 🔧 API Documentation
+
+### **POST** `/api/generate-frames`
+
+Handles the complete pipeline from image upload to frame generation.
+
+**Request:**
+- `Content-Type: multipart/form-data`
+- `image: File` - Image file (PNG, JPEG, WEBP)
+
+**Response:**
+```json
+{
+  "frames": [
+    {
+      "url": "https://s3-presigned-url...",
+    }
+  ]
+}
+```
+
+**Process Flow:**
+1. Image validation and processing
+2. AI video generation via fal.ai
+3. Video download to temporary storage
+4. Frame extraction using ffmpeg
+5. Frame upload to S3 with presigned URLs
+6. Cleanup of temporary files
 
 ---
 
-## Tech Stack
+## 🛡️ Security Features
 
-- [Next.js](https://nextjs.org/)
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [fal.ai](https://fal.ai/) (Generative AI API)
-- [ffmpeg](https://ffmpeg.org/) (for frame extraction, must be installed on your server)
-
----
-
-## Development Notes
-
-- **API keys and secrets** are never exposed to the client.
-- **All backend logic** (AI calls, video download, frame extraction) runs in API routes.
-- **Frontend** is fully decoupled and only communicates with backend via fetch.
+- **API Key Protection** - Server-side only, never exposed to client
+- **File Validation** - Strict image format and size checking  
+- **Temporary Storage** - Automatic cleanup of processed files
+- **Presigned URLs** - Secure, time-limited access to generated frames
+- **Error Handling** - Graceful degradation and user-friendly messages
 
 ---
+
+## 🚀 Deployment
+
+The application is configured for deployment on AWS App Runner with containerized architecture:
+
+1. **Infrastructure Setup** - Use provided Terraform configurations
+2. **Container Registry** - Docker images stored in AWS ECR
+3. **Environment Variables** - Configure in deployment environment
+4. **Container Build** - Automated via GitHub Actions
+5. **Health Checks** - Built-in health monitoring
+
+### **Container Workflow**
+- Application containerized using Docker
+- Images pushed to AWS ECR repository
+- App Runner pulls latest images for deployment
+- Automatic scaling and load balancing
+
+
