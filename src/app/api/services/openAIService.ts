@@ -4,9 +4,15 @@ import { randomUUID } from 'crypto';
 import { OPENAI_PROMPT } from '../prompts';
 
 // Initialize OpenAI client
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+let openai: OpenAI
+try {
+    openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY || ''
+    });
+} catch (error) {
+    openai = {} as OpenAI; // Fallback for build
+}
+
 
 // Response interface for image comparison
 export interface ImageComparisonResult {
