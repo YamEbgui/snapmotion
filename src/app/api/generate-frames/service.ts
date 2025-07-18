@@ -83,9 +83,7 @@ function generateFramesListOfPromises(bufferUri: string) {
     const frame1 = generateFrame(bufferUri);
     const frame2 = generateFrame(bufferUri);
     const frame3 = generateFrame(bufferUri);
-    const frame4 = generateFrame(bufferUri);
-    const frame5 = generateFrame(bufferUri);
 
-    return [frame1, frame2, frame3, frame4, frame5];
+    return [frame1, frame2, frame3];
 }
 

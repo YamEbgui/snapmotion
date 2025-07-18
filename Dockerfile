@@ -19,9 +19,6 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Remove devDependencies to reduce image size
-RUN npm prune --production
-
 # Expose the port your app runs on
 EXPOSE 3000
 

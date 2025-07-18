@@ -2,13 +2,12 @@ import React, { useState, useRef } from 'react';
 
 const SUPPORTED_IMAGE_FORMATS = ['image/png', 'image/jpeg', 'image/webp', 'image/jpg'];
 
-export const UploadForm = ({
-    onSubmit,
-    loading,
-}: {
+interface UploadSectionProps {
     onSubmit: (e: React.FormEvent, file: File | null) => void;
     loading: boolean;
-}) => {
+}
+
+export const UploadSection: React.FC<UploadSectionProps> = ({ onSubmit, loading }) => {
     const [file, setFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -71,16 +70,13 @@ export const UploadForm = ({
     };
 
     return (
-        <div className="w-full max-w-lg">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/20"
-            >
-                <div className="text-center mb-6">
+        <div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="text-center">
                     <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-                        Generate Dynamic Frames
+                        Upload Your Image
                     </h2>
-                    <p className="text-gray-600">Upload your image to create AI-powered video frames</p>
+                    <p className="text-gray-600">Start creating dynamic frames</p>
                 </div>
 
                 {/* Drag and Drop Area */}
@@ -100,7 +96,7 @@ export const UploadForm = ({
                                 <img
                                     src={previewUrl}
                                     alt="Preview"
-                                    className="max-w-full max-h-64 object-contain rounded-xl shadow-lg"
+                                    className="max-w-full max-h-48 object-contain rounded-xl shadow-lg"
                                 />
                                 <button
                                     type="button"
@@ -117,11 +113,9 @@ export const UploadForm = ({
                     ) : (
                         /* Upload Area */
                         <div className="text-center">
-                            <div className="mb-4">
-                                <svg className="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                            </div>
+                            <svg className="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
                             <p className="text-lg font-semibold text-gray-700 mb-2">
                                 {isDragging ? 'Drop your image here!' : 'Drag & drop your image'}
                             </p>
@@ -153,7 +147,7 @@ export const UploadForm = ({
 
                 {/* Error Message */}
                 {error && (
-                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                         <div className="flex items-center gap-2 text-red-700">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -167,7 +161,7 @@ export const UploadForm = ({
                 <button
                     type="submit"
                     disabled={loading || !file}
-                    className="w-full mt-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 disabled:transform-none"
+                    className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-1 disabled:transform-none"
                 >
                     {loading ? (
                         <span className="flex items-center justify-center gap-3">
@@ -189,7 +183,7 @@ export const UploadForm = ({
 
                 {/* Feature hints */}
                 {!file && (
-                    <div className="mt-6 grid grid-cols-2 gap-4 text-center">
+                    <div className="grid grid-cols-2 gap-4 text-center">
                         <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
                             <div className="w-8 h-8 bg-blue-500 rounded-full mx-auto mb-2 flex items-center justify-center">
                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -211,4 +205,4 @@ export const UploadForm = ({
             </form>
         </div>
     );
-};
+}; 
