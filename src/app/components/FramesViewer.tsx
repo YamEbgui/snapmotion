@@ -122,6 +122,7 @@ export const FramesViewer: React.FC<FramesViewerProps> = ({ frames, onBack }) =>
                             <div className="flex items-center justify-between">
                                 <div className="flex-1">
                                     <h3 className="font-semibold text-gray-800 mb-1">Frame {index + 1}</h3>
+                                    {frame.score && <p className="text-sm text-gray-500">score: {frame.score*100}</p>}
                                     <p className="text-sm text-gray-500">AI Generated</p>
                                 </div>
 

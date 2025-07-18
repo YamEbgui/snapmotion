@@ -2,136 +2,66 @@
   <img src="public/logo.png" alt="SnapMotion Logo" width="120" />
 </p>
 
-# SnapMotion
+# SnapMotion 🎬✨
 
-SnapMotion is a modern Next.js + TypeScript web application that transforms static images into dynamic video frames using AI. Users can upload an image and watch as our AI creates multiple frames showing different poses and perspectives of their subject.
+Transform static images into dynamic video frames with AI-powered pose transformation and automated quality scoring.
 
----
+## 🌟 Features
 
-## ✨ Features
+- **AI Video Generation**: Convert images to dynamic video using fal.ai
+- **Frame Extraction**: Extract high-quality frames using FFmpeg
+- **Automatic Quality Scoring**: AI-powered frame quality assessment using OpenAI GPT-4 Vision
+- **Cloud Storage**: Secure S3 storage with presigned URLs
+- **Modern UI/UX**: Beautiful, responsive interface with animations
+- **Real-time Processing**: Live updates with comprehensive logging
 
-- 🚀 **Next.js 15** with App Router & React 19
-- ⚡ **Modern UI/UX** with Tailwind CSS v4 and enhanced animations
-- 🖼️ **Advanced Image Upload** with drag & drop, preview, and validation (PNG, JPEG, WEBP)
-- 🤖 **AI Video Generation** via fal.ai API with secure backend processing
-- 🎬 **Frame Extraction** from generated videos using ffmpeg
-- 🔒 **Secure Architecture** - API keys never exposed to client
-- 🎯 **Enhanced User Experience** with loading states, animations, and intuitive workflow
-- 💾 **Download Functionality** - Individual frame downloads and bulk download options 
+## 🎯 New AI Quality Scoring
 
----
+SnapMotion now includes automated quality assessment for generated frames:
 
-## 🎯 How It Works
+- **OpenAI Integration**: Uses GPT-4 Vision to compare original vs generated frames
+- **Decimal Scoring**: Returns scores from 0.0 to 1.0 for quality assessment
+- **Detailed Reasoning**: AI provides explanations for scoring decisions
+- **Automatic Sorting**: Frames are automatically ranked by quality score
 
-1. **Upload Your Image** 📤
-   - Drag & drop or click to select an image
-   - Real-time preview with validation
-   - Supports PNG, JPEG, and WEBP formats
+### Quality Score Interpretation:
+- **0.9-1.0**: Excellent quality, very similar to original
+- **0.7-0.8**: Good quality, maintains essence well
+- **0.5-0.6**: Average quality, moderate similarity
+- **0.3-0.4**: Below average, noticeable differences
+- **0.0-0.2**: Poor quality, significant differences
 
-2. **AI Processing** 🤖
-   - Image sent securely to fal.ai for video generation
-   - Custom AI prompt optimizes pose transformation
-   - Beautiful loading animations show progress
+## 🚀 Tech Stack
 
-3. **Frame Generation** 🎬
-   - Video downloaded to secure temporary directory
-   - ffmpeg extracts multiple high-quality frames
-   - Frames uploaded to S3 with presigned URLs
+**Frontend:**
+- Next.js 15 with App Router
+- React 19 with Server Components
+- TypeScript for type safety
+- Tailwind CSS v4 for styling
 
-4. **View & Download** 📱
-   - Individual frame downloads with loading states
-   - Bulk download option for all frames
-   - Smooth animations and transitions
+**Backend:**
+- fal.ai for AI video generation
+- OpenAI GPT-4 Vision for quality scoring
+- FFmpeg for frame extraction
+- AWS S3 for file storage
 
-
----
-
-## 📋 Usage Guidelines
-
-### **Perfect Subjects for Transformation:**
-- 👤 **People** - Standing, sitting, dancing, or any human pose
-- 🐾 **Animals** - Pets, wildlife, or any living creature  
-- 🎭 **Characters** - Toys, statues, or digital characters
-
-### **For Best Results:**
-- ✅ Ensure the subject is clearly visible and not blurry
-- ✅ Focus on one main object or figure
-- ✅ Avoid cluttered or busy backgrounds
-- ✅ Use good lighting and contrast
-
-## 🚀 Getting Started
-
-### 1. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-### 2. AWS Configuration
-
-Ensure your AWS credentials are configured for S3 access:
-- S3 bucket for frame storage
-- Proper IAM permissions for upload/download
-
-
-### 3. System Requirements
-
-Install ffmpeg on your server:
-```bash
-# macOS
-brew install ffmpeg
-
-# Ubuntu/Debian
-sudo apt-get install ffmpeg
-
-# Windows
-# Download from https://ffmpeg.org/download.html
-```
-
-### 4. Run Development Server
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to see the application.
-
----
-
-## 🏗️ Tech Stack
-
-### **Frontend**
-- [Next.js 15](https://nextjs.org/) - React framework with App Router
-- [React 19](https://react.dev/) - Latest React with concurrent features
-- [TypeScript](https://www.typescriptlang.org/) - Type safety and developer experience
-- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
-
-### **Backend & AI**
-- [fal.ai](https://fal.ai/) - Generative AI API for video creation
-- [ffmpeg](https://ffmpeg.org/) - Video processing and frame extraction
-- [AWS S3](https://aws.amazon.com/s3/) - Cloud storage for generated frames
-
-### **Infrastructure**
-- AWS App Runner - Serverless deployment
+**Infrastructure:**
+- AWS App Runner for deployment
 - AWS ECR - Container registry for Docker images
-- Terraform - Infrastructure as Code
-- GitHub Actions - CI/CD automation
+- Terraform for Infrastructure as Code
+- GitHub Actions for CI/CD
 
----
+## 📡 API Endpoints
 
-## 🔧 API Documentation
+### Generate Frames
+```http
+POST /api/generate-frames
+Content-Type: multipart/form-data
 
-### **POST** `/api/generate-frames`
-
-Handles the complete pipeline from image upload to frame generation.
-
-**Request:**
-- `Content-Type: multipart/form-data`
-- `image: File` - Image file (PNG, JPEG, WEBP)
+{
+  "image": File
+}
+```
 
 **Response:**
 ```json
@@ -139,45 +69,180 @@ Handles the complete pipeline from image upload to frame generation.
   "frames": [
     {
       "url": "https://s3-presigned-url...",
+      "score": 0.85,
+      "reasoning": "High quality frame with good pose variation..."
     }
   ]
 }
 ```
 
-**Process Flow:**
-1. Image validation and processing
-2. AI video generation via fal.ai
-3. Video download to temporary storage
-4. Frame extraction using ffmpeg
-5. Frame upload to S3 with presigned URLs
-6. Cleanup of temporary files
+### Compare Images (New)
+```http
+POST /api/compare-images
+Content-Type: application/json
+
+{
+  "originalImageUrl": "https://...",
+  "generatedFrameUrl": "https://..."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "score": 0.75,
+    "reasoning": "Good visual similarity with minor pose differences",
+    "operationId": "op_123456",
+    "processingTimeMs": 2500
+  }
+}
+```
+
+## 🔧 Environment Variables
+
+```env
+# fal.ai Configuration
+FAL_API_KEY=your_fal_api_key
+FAL_VIDEO_GENERATION_MODEL=fal-ai/stable-video-diffusion
+
+# OpenAI Configuration (New)
+OPENAI_API_KEY=your_openai_api_key
+
+# AWS Configuration
+AWS_REGION=us-east-1
+AWS_BUCKET_NAME=your-s3-bucket
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+```
+
+## 🏗️ Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd snapmotion
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # Note: You'll need to install the OpenAI SDK
+   npm install openai
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   # Fill in your API keys and AWS credentials
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+## 🎨 UI/UX Highlights
+
+- **Glass Morphism Design**: Modern frosted glass effects
+- **Drag & Drop Upload**: Intuitive file upload experience
+- **Real-time Previews**: Instant image previews with metadata
+- **Quality Indicators**: Visual scoring system for generated frames
+- **Staggered Animations**: Smooth, professional transitions
+- **Responsive Grid**: Adaptive layout for all screen sizes
+- **Loading States**: Comprehensive progress indicators
+- **Error Handling**: User-friendly error messages
+
+## 📁 Component Architecture
+
+```
+src/app/
+├── components/
+│   ├── HomePage.tsx           # Main application logic
+│   ├── MainContent.tsx        # Unified content container
+│   ├── ExplanationSection.tsx # Feature description
+│   ├── UploadSection.tsx      # File upload interface
+│   ├── FramesViewer.tsx       # Generated frames display
+│   ├── Header.tsx             # Application header
+│   ├── BulletPoint.tsx        # Reusable bullet component
+│   └── TipPoint.tsx           # Reusable tip component
+├── api/
+│   ├── generate-frames/       # Main processing endpoint
+│   ├── compare-images/        # New AI comparison endpoint
+│   ├── services/              # Backend services
+│   │   ├── openAIService.ts   # New OpenAI integration
+│   │   ├── falIntegration.ts  # fal.ai video generation
+│   │   ├── framesExtraction.ts # FFmpeg processing
+│   │   ├── uploadImage.ts     # S3 upload handling
+│   │   └── downloadVideo.ts   # Video download utility
+│   └── lib/
+│       ├── logger.ts          # Centralized logging
+│       └── s3Service.ts       # AWS S3 operations
+└── types/
+    └── Frame.ts               # Enhanced with scoring
+```
+
+## 🔒 Security Features
+
+- **Presigned URLs**: Secure, time-limited S3 access
+- **Input Validation**: File type and size verification
+- **Error Sanitization**: Safe error message exposure
+- **Environment Isolation**: Secure credential management
+- **CORS Configuration**: Proper cross-origin handling
+
+## ⚡ Performance Optimizations
+
+- **Concurrent Processing**: Parallel frame generation
+- **Lazy Loading**: On-demand component loading
+- **Image Optimization**: Next.js automatic optimization
+- **Caching Strategy**: Efficient resource management
+- **Bundle Splitting**: Optimized code delivery
+
+## 📊 Monitoring & Logging
+
+The application includes comprehensive logging throughout the backend:
+
+- **Request Tracking**: Full request lifecycle monitoring
+- **Performance Metrics**: Processing time measurements
+- **Error Logging**: Detailed error context and stack traces
+- **OpenAI Usage**: Token usage and API call monitoring
+- **Resource Cleanup**: File system operation tracking
+
+## 🚢 Deployment
+
+### Container Workflow
+1. **Build**: GitHub Actions builds Docker image
+2. **Push**: Image pushed to AWS ECR
+3. **Deploy**: App Runner pulls from ECR and deploys
+
+### Infrastructure
+All infrastructure is managed via Terraform:
+
+```bash
+cd terraform
+terraform init
+terraform plan
+terraform apply
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🛡️ Security Features
-
-- **API Key Protection** - Server-side only, never exposed to client
-- **File Validation** - Strict image format and size checking  
-- **Temporary Storage** - Automatic cleanup of processed files
-- **Presigned URLs** - Secure, time-limited access to generated frames
-- **Error Handling** - Graceful degradation and user-friendly messages
-
----
-
-## 🚀 Deployment
-
-The application is configured for deployment on AWS App Runner with containerized architecture:
-
-1. **Infrastructure Setup** - Use provided Terraform configurations
-2. **Container Registry** - Docker images stored in AWS ECR
-3. **Environment Variables** - Configure in deployment environment
-4. **Container Build** - Automated via GitHub Actions
-5. **Health Checks** - Built-in health monitoring
-
-### **Container Workflow**
-- Application containerized using Docker
-- Images pushed to AWS ECR repository
-- App Runner pulls latest images for deployment
-- Automatic scaling and load balancing
+**Built with ❤️ using Next.js, OpenAI, fal.ai, and AWS**
 
 
