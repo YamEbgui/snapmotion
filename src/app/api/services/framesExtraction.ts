@@ -1,31 +1,29 @@
 import { randomUUID } from "crypto";
-import { tmpdir } from "os";
-import { join as pathJoin } from "path";
-import ffmpeg from "fluent-ffmpeg";
+import { execa } from 'execa';
+import { tmpdir } from 'os';
+import { join as pathJoin } from 'path';
 
 const tmpDir = tmpdir();
-const TAKE_AT_SECONDS = "3";
-const FILE_EXTENSION = ".png";
+const TAKE_AT_SECONDS = '4'
+const FILE_EXTENSION = '.png'
 
 export async function extractFrame(videoUrl: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    try {
         const frameId = randomUUID();
         const fileName = frameId + FILE_EXTENSION;
         const videoPath = pathJoin(tmpDir, videoUrl);
+        const outputPath = pathJoin(tmpDir, fileName);
 
-        ffmpeg(videoPath)
-            .screenshots({
-                timestamps: [TAKE_AT_SECONDS],
-                filename: fileName,
-                folder: tmpDir,
-                size: '640x?'
-            })
-            .on('end', () => {
-                resolve(fileName);
-            })
-            .on('error', (err) => {
-                console.log("error while using ffmpeg", err);
-                reject(err);
-            });
-    });
+        await execa('ffmpeg', [
+            '-i', videoPath,
+            '-ss', TAKE_AT_SECONDS,
+            '-vframes', '1',
+            outputPath
+        ]);
+
+        return fileName;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
 }

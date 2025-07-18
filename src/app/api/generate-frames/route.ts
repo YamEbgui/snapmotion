@@ -7,6 +7,7 @@ import { uploadImageAndReturnPresignedUrl } from "../services/uploadImage";
 import { readFile } from 'fs/promises'
 import { join as pathJoin } from 'path';
 import { tmpdir } from "os";
+import { generateFrames } from "./service";
 
 const tmpDir = tmpdir();
 
@@ -22,36 +23,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: "Missing image" }, { status: 400 });
         }
 
-        // Convert image (which is a File or Blob) to a buffer and then to a buffer URI (base64 data URL)
-        const arrayBuffer = await image.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const mimeType = image.type || "image/png";
-        const bufferUri = `data:${mimeType};base64,${buffer.toString("base64")}`;
+        const frames = await generateFrames(image);
 
-        // Call your function (adjust arguments as needed)
-        const result = await generateVideoFromImage(bufferUri);
-        const reqId = result.requestId;
-
-
-        // Ensure Url for video exist 
-        if (result.data.video.url !== null) {
-            await downloadVideo(result.data.video.url, reqId + ".mp4");
-        } else {
-            throw new Error("Video generation failed");
-        }
-
-        // Get Frame from video
-        const videoPath = reqId + ".mp4";
-        const frame = await extractFrame(videoPath);
-
-        console.log("Frame: " + frame);
-
-        // Upload frame to S3
-        const framePath = pathJoin(tmpDir, frame);
-        const frameBuffer = await readFileSync(framePath);
-        const presignedUrl = await uploadImageAndReturnPresignedUrl(frameBuffer, frame);
-
-        return NextResponse.json({ frames: [{ url: presignedUrl }] });
+        return NextResponse.json({ frames });
     } catch (error) {
         console.error("Error while generating frames:", error);
         return NextResponse.json({ error: (error as Error).message }, { status: 500 });

@@ -1,6 +1,6 @@
 import { fal } from "@fal-ai/client"
 import { FAL_AI_PROMPT } from "../prompts";
-
+import { randomUUID } from "crypto";
 fal.config({
     credentials: process.env.FAL_API_KEY,
 })
