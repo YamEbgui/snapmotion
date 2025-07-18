@@ -49,3 +49,6 @@ terraform.tfstate.backup
 terraform.tfvars
 terraform.tfvars.backup
 terraform.tfvars.backup.backup
+
+# cursor
+.cursorrules
