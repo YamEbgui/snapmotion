@@ -1,0 +1,51 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Build
+        run: |
+          docker build -t 897091331395.dkr.ecr.us-east-1.amazonaws.com/snapmotion-app-ecr-local:latest .
+          docker tag 897091331395.dkr.ecr.us-east-1.amazonaws.com/snapmotion-app-ecr-local:latest 897091331395.dkr.ecr.us-east-1.amazonaws.com/snapmotion-app-ecr-local:${{ github.sha }}
+
+      - name: Login to ECR
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 897091331395.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Push image to ECR
+        run: |
+          docker push 897091331395.dkr.ecr.us-east-1.amazonaws.com/snapmotion-app-ecr-local:latest
+          docker push 897091331395.dkr.ecr.us-east-1.amazonaws.com/snapmotion-app-ecr-local:${{ github.sha }}
+
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up AWS CLI
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: us-east-1
+
+  #     - name: Deploy to App Runner
+  #       run: aws apprunner start-deployment --service-arn arn:aws:apprunner:us-east-1:897091331395:service/snapmotion-app-runner-local/150af9ced7bb4382803240e8ae150c1d
