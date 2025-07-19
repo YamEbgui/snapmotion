@@ -150,7 +150,7 @@ First image on ecr need to be deployed to ecr before app runner can be deployed.
 
 ### Disclaimers
 This project has a variety of areas that can be improved, and several came to my mind as I was developing it. Here are a few examples:
-1. The project uses an AWS role instead of a user, which is not best practice, but was done to enable deployment to Vercel, for example.
+1. The project need to use an AWS role instead of a user, which is not best practice, but was done to enable deployment to Vercel, for example.
 2. Error handling does not follow best practices and is a work in progress.
 3. The app has not been tested on different devices and browsers, though it is designed to look good on mobile as well.
 4. Tests are missing and type definitions are not perfect.
