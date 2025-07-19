@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Frame } from '../types/Frame';
+import { downloadFrame } from '../services/downloadService';
 
 interface FramesViewerProps {
     frames: Frame[];
@@ -13,16 +14,7 @@ export const FramesViewer: React.FC<FramesViewerProps> = ({ frames, onBack }) =>
     const handleDownload = async (frame: Frame, index: number) => {
         setDownloadingFrames(prev => new Set(prev).add(index));
         try {
-            const response = await fetch(frame.url);
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `frame_${index + 1}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
+            await downloadFrame(frame.url, `frame_${index + 1}.png`);
         } catch (error) {
             console.error('Error downloading frame:', error);
             alert(`Failed to download frame ${index + 1}. Please try again.`);

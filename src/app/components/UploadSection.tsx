@@ -70,7 +70,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({ onSubmit, loading 
     };
 
     return (
-        <div>
+        <div className='col-span-2 lg:col-span-1 '>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="text-center">
                     <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
@@ -82,8 +82,8 @@ export const UploadSection: React.FC<UploadSectionProps> = ({ onSubmit, loading 
                 {/* Drag and Drop Area */}
                 <div
                     className={`relative border-2 border-dashed rounded-2xl p-8 transition-all duration-300 ${isDragging
-                            ? 'border-purple-400 bg-purple-50 scale-105'
-                            : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50/50'
+                        ? 'border-purple-400 bg-purple-50 scale-105'
+                        : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50/50'
                         } ${previewUrl ? 'border-green-400 bg-green-50' : ''}`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}

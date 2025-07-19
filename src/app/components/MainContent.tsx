@@ -1,17 +1,16 @@
 "use client"
-import { useState } from "react";
 import { ExplanationSection } from "./ExplanationSection";
 import { UploadSection } from "./UploadSection";
 import { Frame } from "../types/Frame";
 import { getFrames } from "../services/framesService";
 
-interface MainContentProps {
+interface HomeContentProps {
     onFramesGenerated: (frames: Frame[]) => void;
     loading: boolean;
     setLoading: (loading: boolean) => void;
 }
 
-export const MainContent: React.FC<MainContentProps> = ({ onFramesGenerated, loading, setLoading }) => {
+export const MainContent: React.FC<HomeContentProps> = ({ onFramesGenerated, loading, setLoading }) => {
     const handleSubmit = async (e: React.FormEvent, file: File | null) => {
         e.preventDefault();
         if (!file) return;
